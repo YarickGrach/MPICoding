@@ -8,7 +8,14 @@ int main(int argc, char** argv) {
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	MPI_Status stat;
 
-	printf("rank=%d, size=%d\n", rank, size);
+	int a[size];
+
+	if (rank != 0) for (int i = 0; i < size; i++) a[i] = rank;
+	int b[size * size];
+
+	MPI_Gather (a, size, MPI_INT, b, size, MPI_INT, 0, MPI_COMM_WORLD);
+
+	if (rank == 0) for (int i = size; i < size * size; i++) printf("%d ", b[i]);
 
 	MPI_Finalize();
 	return 0;
